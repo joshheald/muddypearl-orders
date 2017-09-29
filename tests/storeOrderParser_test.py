@@ -26,7 +26,12 @@ class ParserTest(unittest.TestCase):
         Even with other stuff in the file?"""
         actual = storeorderparser.customer_email_from_order(order)
         self.assertEqual(actual, "can@youfind.me")
-        
+
+    def test_customerEmailFromOrder_NoSpaceBeforeEmail_StillReturnsString(self):
+        order = "Email:anEmail@email.mail"
+        actual = storeorderparser.customer_email_from_order(order)
+        self.assertEqual(actual, "anEmail@email.mail")
+    
     """
     def test_isupper(self):
         self.assertTrue('FOO'.isupper())

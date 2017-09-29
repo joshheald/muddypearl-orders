@@ -16,14 +16,19 @@ def strings_from_lines(lines, delimiter):
 	return strings
 
 def customer_email_from_order(order):
-	identifier = "Email: "
-	if order is None:
+	email = text_for_identifier("Email:", order)
+	if email is not None:
+		email = email.strip()
+	return email
+
+def text_for_identifier(identifier, from_text, end_string = "\n"):
+	if from_text is None:
 		return None
-	if identifier in order:
-		order += "\n"
-		index = order.find(identifier) + len(identifier)
-		endOfLine = order.find("\n", index)
-		return order[index:endOfLine]
+	if identifier in from_text:
+		from_text += end_string
+		index = from_text.find(identifier) + len(identifier)
+		end_index = from_text.find(end_string, index)
+		return from_text[index:end_index]
 	return None
 
 if __name__ == '__main__':
