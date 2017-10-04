@@ -13,7 +13,7 @@ class ParserTest(unittest.TestCase):
         
         storeorderparser.customer_email_from_order(order)
         
-        text_for_identifier_mock.assert_called_once_with("Email:", order)
+        text_for_identifier_mock.assert_called_with("Email:", order)
 
     @patch('orderparser.storeorderparser.mputils.text_for_identifier')
     def test_customerEmailFromOrder_returnsNoneIfThatsWhatItGets(self, text_for_identifier_mock):
@@ -32,6 +32,37 @@ class ParserTest(unittest.TestCase):
         text_for_identifier_mock.return_value = "   someemail@email.com \n"
         actual = storeorderparser.customer_email_from_order("")
         self.assertEqual(actual, "someemail@email.com")
+
+    @patch('orderparser.storeorderparser.mputils.text_for_identifier')
+    def test_customerFirstNameFromOrder_callsTextFromIdentifier_WithCorrectIdentifier(self, text_for_identifier_mock):
+        storeorderparser.customer_first_name("order text")
+        text_for_identifier_mock.assert_called_with("Name:", "order text")
+
+    @patch('orderparser.storeorderparser.mputils.text_for_identifier')
+    def test_customerFirstNameFromOrder_twoWords_returnsFirstWord(self, text_for_identifier_mock):
+        text_for_identifier_mock.return_value = "Samantha McIntire"
+        actual = storeorderparser.customer_first_name("text that doesn't really matter because it's mocked anyway")
+        self.assertEqual(actual, "Samantha")
+
+    @patch('orderparser.storeorderparser.mputils.text_for_identifier')
+    def test_customerFirstNameFromOrder_firstWordHasApostrophe_returnsFirstWord(self, text_for_identifier_mock):
+        text_for_identifier_mock.return_value = "M'chael Widdershins"
+        actual = storeorderparser.customer_first_name("there's no name here but it doesn't matter")
+        self.assertEqual(actual, "M'chael")
+
+    @patch('orderparser.storeorderparser.mputils.text_for_identifier')
+    def test_customerFirstNameFromOrder_firstWordHasHyphen_returnsFullWord(self, text_for_identifier_mock):
+        text_for_identifier_mock.return_value = "Sammie-Ann Bolton"
+        actual = storeorderparser.customer_first_name("order text")
+        self.assertEqual(actual, "Sammie-Ann")
+
+    @patch('orderparser.storeorderparser.mputils.text_for_identifier')
+    def test_customewFirstNameFromOrder_ThreeWords_returnsFirstTwoWords(self, text_for_identifier_mock):
+        text_for_identifier_mock.return_value = "Anthony John Horrocks"
+        actual = storeorderparser.customer_first_name("parsed stuff")
+        self.assertEqual(actual, "Anthony John")
+
+
 
 
 

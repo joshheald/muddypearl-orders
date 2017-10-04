@@ -23,6 +23,10 @@ def customer_email_from_order(order):
 		email = email.strip()
 	return email
 
+def customer_first_name(order):
+	full_name = mputils.text_for_identifier("Name:", "order text")
+	return ' '.join(full_name.split()[:-1])
+
 if __name__ == '__main__':
 	inFile = sys.argv[1]
 	outFile = sys.argv[2]
