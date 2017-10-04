@@ -24,8 +24,13 @@ def customer_email_from_order(order):
 	return email
 
 def customer_first_name(order):
-	full_name = mputils.text_for_identifier("Name:", "order text")
+	full_name = mputils.text_for_identifier("Name:", order)
 	return ' '.join(full_name.split()[:-1])
+
+def customer_last_name(order):
+	full_name = mputils.text_for_identifier("Name:", order)
+	return full_name.split()[-1]
+	
 
 if __name__ == '__main__':
 	inFile = sys.argv[1]
