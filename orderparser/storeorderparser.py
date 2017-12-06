@@ -1,6 +1,11 @@
-import datetime
 import sys
+import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..')) 
+import datetime
+import csv
 from muddypearl import mputils
+from order import Order, Address
+from customer import Customer
 
 
 def order_strings_from_lines(lines):
@@ -30,7 +35,25 @@ def customer_first_name(order):
 def customer_last_name(order):
 	full_name = mputils.text_for_identifier("Name:", order)
 	return full_name.split()[-1]
-	
+
+def customer_newsletter_subscription(order):
+	newsletter_subscription = mputils.text_for_identifier("Newsletter subscription:", order)
+	return newsletter_subscription
+
+def address_from_order(order, identifier):
+	address_string = mputils.text_for_identifier(identifier, order)
+	if address_string is not None:
+		address_lines = address_string.splitlines()
+		if len(address_lines) == 5:
+			return Address(address_lines[0], address_lines[1], address_lines[2], address_lines[3], address_lines[4])
+	return None
+
+def delivery_handling(order):
+	delivery_handling = mputils.text_for_identifier("Delivery & Handling:", order)
+	if delivery_handling == 'FREE':
+		return "0.00"
+	else:
+		return delivery_handling.strip('£')
 
 if __name__ == '__main__':
 	inFile = sys.argv[1]
@@ -41,6 +64,11 @@ if __name__ == '__main__':
 
 		order_strings = order_strings_from_lines(lines)
 
-		with open(outFile,'w') as o:
-			for line in order_strings:
-				o.write(line+"\n")
+		with open(outFile, 'w', newline='') as csvfile:
+			csvwriter = csv.writer(csvfile, quoting=csv.QUOTE_MINIMAL)
+			for order in order_strings:
+				billing_address = address_from_order(order, "Billing address:")
+				shipping_address = address_from_order(order, "Delivery address:")
+				order_model = Order(delivery_handling(order), order.splitlines()[1], mputils.text_for_identifier("Transaction ID:", order), billing_address, shipping_address)
+				customer = Customer(customer_email_from_order(order), customer_first_name(order), customer_last_name(order), customer_newsletter_subscription(order), order_model)
+				csvwriter.writerow([customer.email, customer.first_name, customer.last_name, customer.newsletter_subscription, order_model.transaction_id, order_model.placed])
