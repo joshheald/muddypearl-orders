@@ -1,12 +1,17 @@
 class Order(object):
 	"""docstring for Order"""
-	def __init__(self, delivery_handling, placed, transaction_id, billing_address, delivery_address):
+	def __init__(self, delivery_handling, placed, transaction_id, billing_address, delivery_address, customer):
 		super(Order, self).__init__()
 		self.delivery_handling = delivery_handling
 		self.placed = placed
 		self.transaction_id = transaction_id
 		self.billing_address = billing_address
 		self.delivery_address = delivery_address
+		self.customer = customer
+		self.airtable_id = "{}: {}".format(customer.email, transaction_id)
+		self.book_orders = []
+
+
 
 class Address(object):
 	"""docstring for Address"""
