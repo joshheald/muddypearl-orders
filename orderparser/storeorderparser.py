@@ -42,13 +42,14 @@ def customer_newsletter_subscription(order):
 	return newsletter_subscription
 
 def address_from_order(order, identifier):
-	address_string = mputils.text_for_identifier(identifier, order)
+	address_string = mputils.text_for_identifier(identifier, order, end_string="\n\n")
 	if address_string is not None:
 		address_lines = address_string.splitlines()
+		print(address_lines)
 		if len(address_lines) == 5:
-			return Address(address_lines[0], address_lines[1], address_lines[2], address_lines[3], address_lines[4])
-		elif len(address_lines) == 4:
-			return Address(address_lines[0], "", address_lines[1], address_lines[2], address_lines[3])
+			return Address(address_lines[1], "", address_lines[2], address_lines[3], address_lines[4])
+		elif len(address_lines) == 6:
+			return Address(address_lines[1], address_lines[2], address_lines[3], address_lines[4], address_lines[5])
 	return Address("","","","","")
 
 def delivery_handling(order):
@@ -83,8 +84,8 @@ if __name__ == '__main__':
 		orders = []
 		for order in order_strings:
 			customer = Customer(customer_email_from_order(order), customer_first_name(order), customer_last_name(order), customer_newsletter_subscription(order))
-			billing_address = address_from_order(order, "Billing address:")
-			delivery_address = address_from_order(order, "Delivery address:")
+			billing_address = address_from_order(order, "Billing address:\n")
+			delivery_address = address_from_order(order, "Delivery address:\n\n")
 			order_model = Order(delivery_handling(order), order.splitlines()[1], mputils.text_for_identifier("Transaction ID:", order), billing_address, delivery_address, customer)
 			book_orders = book_orders_from_lines(mputils.order_lines(order), order_model)
 			order_model.book_orders = book_orders
