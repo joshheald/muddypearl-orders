@@ -27,6 +27,8 @@ def customer_email_from_order(order):
 	email = mputils.text_for_identifier("Email:", order)
 	if email is not None:
 		email = email.strip()
+	if email is None or email == "":
+		email = "{firstname}.{lastname}@example.com".format(firstname=customer_first_name(order), lastname=customer_last_name(order))
 	return email
 
 def customer_first_name(order):
@@ -99,8 +101,8 @@ if __name__ == '__main__':
 					customer.first_name, 
 					customer.last_name, 
 					customer.newsletter_subscription, 
-					order_model.transaction_id, 
-					order_model.placed])
+					order.transaction_id, 
+					order.placed])
 
 		order_file = filename_with_suffix(out_file, "order")
 		with open(order_file, 'w', newline='') as order_csvfile:
