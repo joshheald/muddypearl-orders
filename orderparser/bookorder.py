@@ -5,5 +5,5 @@ class BookOrder(object):
 		self.order = order
 		self.book = book
 		self.quantity = quantity
-		self.price = price
+		self.price = price.strip('£')
 		

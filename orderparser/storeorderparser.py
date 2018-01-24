@@ -45,7 +45,6 @@ def address_from_order(order, identifier):
 	address_string = mputils.text_for_identifier(identifier, order, end_string="\n\n")
 	if address_string is not None:
 		address_lines = address_string.splitlines()
-		print(address_lines)
 		if len(address_lines) == 5:
 			return Address(address_lines[1], "", address_lines[2], address_lines[3], address_lines[4])
 		elif len(address_lines) == 6:
@@ -57,7 +56,7 @@ def delivery_handling(order):
 	if delivery_handling.strip() == 'FREE':
 		return "0.00"
 	else:
-		return delivery_handling.strip(u' £')
+		return delivery_handling.strip(" \t£")
 
 def book_orders_from_lines(order_lines, order):
 	book_orders = []
